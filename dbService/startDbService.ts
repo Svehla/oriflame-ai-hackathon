@@ -1,5 +1,5 @@
 import config from "config";
-import {Request, ConnectionPool, default as sql} from "mssql";
+import { Request, ConnectionPool, default as sql } from "mssql";
 
 declare module "mssql" {
   export const connect: any;
@@ -21,11 +21,11 @@ const startDbService = () => {
         return;
       }
 
-      console.log(data.recordset[0])
+      console.log(data.recordset[0]);
       // if (error) response.send(error);
       // response.send(data);
     });
   });
-}
+};
 
-startDbService()
+startDbService();

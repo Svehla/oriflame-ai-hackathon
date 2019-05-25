@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start-db-service": "ts-node-dev --respawn --transpileOnly ./dbService/startDbService.ts",
+    "db-populate-json": "ts-node ./dbService/populateWithJsonData.ts",
     "messenger": "ts-node --transpileOnly messenger/index.ts",
     "messenger-dev": "ts-node-dev messenger/index.ts"
   },

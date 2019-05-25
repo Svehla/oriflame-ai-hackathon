@@ -1,31 +1,41 @@
 ## filters
 
-### ColorHexCode
+### ColorHexCode -> color 
 
 String, e.g. "Black"
 
-### category_descr
- | Accessories
- | Colour Cosmetics
- | Fragrances
- | Hair Care
- | Other Category
- | Personal Care
- | Skin Care
- | Unknown
- | Wellness
+### Tags 
 
+E.g.:
+{
+    "GroupName": "Benefits",
+    "Tags": [{
+      "Value": "curling"
+    }]
+},
+{
+    "GroupName": "ColourFamilies",
+    "Tags": [{
+      "Value": "black"
+    }]
+},
+{
+    "GroupName": "Whos",
+    "Tags": [{
+      "Value": "women"
+    }]
+}
 
 	
 ### prod_status_descr 
-| Unknown
-| Ongoing (N)
-| Discontinued (D)
-| Cancelled (Blocked) Product Brief (B)
-| Refeature Limited Life (Z)
-| Limited Life (L)
-| Corporate  Merchandise Material (C)
-| Refeature Ongoing (= PopUp) (X)
+ | Unknown -> 11455
+ | Ongoing (N) -> 9625
+ | Discontinued (D) -> 7173
+ | Cancelled (Blocked) Product Brief (B) -> 4680
+ | Refeature Limited Life (Z) -> 801
+ | Limited Life (L) -> 35366
+ | Corporate  Merchandise Material (C) -> 874
+ | Refeature Ongoing (= PopUp) (X) -> 18
 
 ### npd_launch
   date
@@ -43,13 +53,13 @@ String, e.g. "Black"
 | Hair Care
 
 ### development_descr
-| Unknown
-| OCSA Purchase (Regional products)
-| NA
-| Global Development
-| China Products
-| Local Purchase
-| India Products
+ | Unknown -> 10435
+ | OCSA Purchase (Regional products) -> 1281
+ | NA -> 1028
+ | Global Development -> 22028
+ | China Products -> 67
+ | Local Purchase -> 34286
+ | India Products -> 867
 
 ### sector_descr
 | Nail Products -> (1327)
@@ -96,165 +106,7 @@ String, e.g. "Black"
 | Jewellery -> (2433)
 | Eye Make-Up -> (1669)
 
-### segment_descr
-"Fashion Accessories"	36
-"Gift Packaging"	14
-"Unknown"	10435
-"House & Tableware"	41
-"Body Wash/Shower Gel"	711
-"Women Gift"	14
-"Firming / Anti-Cellulite"	79
-"Purses"	14
-"Diffuser Oil Fragrance"	15
-"Men Bag"	2
-"MakeUp Tools"	263
-"Other Facial Make-Up"	147
-"Packaging"	263
-"Facial Cleansers"	379
-"Health"	12
-"Toothpaste"	52
-"Men Stationery"	1
-"Beauty Tools & Brushes"	34
-"Men Pre Shave"	122
-"Bar Soap"	291
-"Other Eye Make-Up"	71
-"Men Textile"	5
-"Bag"	2539
-"Nail Treatments/Strengthener"	57
-"Weight Management"	109
-"Sports"	75
-"Wellness"	37
-"Powder"	154
-"Stationery_Charity"	4
-"Bag_Charity"	4
-"Fashion Jewellery"	148
-"Nail Polish"	1164
-"Lip Liner/Pencil"	176
-"Gifts"	14
-"Deodorants"	441
-"Shampoos"	352
-"Nourishers/Anti-Agers"	25
-"Gift Electronics"	2
-"Kids Textiles"	2
-"Anti-Agers"	855
-"Cases & Organizers"	350
-"Conditioners"	303
-"Fashion Other"	444
-"Kids Toys"	11
-"Men Accessories Other"	7
-"Polish Remover"	19
-"Foot"	6
-"Starter Kit"	30
-"Youth Fragrances"	138
-"Fashion Accessory Other"	55
-"Other"	5
-"Other Body Care"	2
-"Bedroom"	15
-"Lip Care"	121
-"Home Fragrance Scented Cushions"	16
-"Lip Gloss"	430
-"Lip Moisturisers"	4
-"2in1"	69
-"Eye Liner/Pencil"	466
-"Body & Bath Tools"	614
-"Necklace"	680
-"Watch"	133
-"Self Tanning"	19
-"Male Fragrance"	513
-"Male Promo"	4
-"Ring"	346
-"Men Razors and Blades"	5
-"Men Fashion"	326
-"Women Razors and Blades"	11
-"Tableware"	50
-"Skin Care Tools"	3
-"Toothbrush"	28
-"GDC kit"	1460
-"Cosmetic Bag"	10
-"Vitamins"	35
-"Combination Non-Herbal/Traditional Dietary Supplements"	133
-"Face"	40
-"Face Care Sets"	31
-"Men Post Shave"	67
-"Other segment"	1511
-"Decorations"	355
-"Home Fragrance Room Sprays"	22
-"Baby Accessories"	25
-"Fashion Hair"	7
-"Female Fragrance"	890
-"Home"	46
-"Mouthwashes"	6
-"Eye Shadow"	819
-"Facial Moisturisers"	1041
-"Earrings"	646
-"Bracelet"	408
-"Foundation/Concealer"	873
-"Kids Accessories"	625
-"Acne Treatment"	77
-"Talc Powder"	77
-"Sales Support Items Segment"	573
-"Paediatric Vitamins and Dietary Supplements"	12
-"Sun Protection"	79
-"Fashion Bag"	23
-"Liquid Soap"	54
-"Baby Skin Care"	22
-"Blusher/Bronzer/Highlighter"	213
-"Cosmetic Accessories"	10
-"Nature Fragrance"	24
-"Baby Hair Care"	18
-"Textile"	178
-"Wellness Fashion"	9
-"General Purpose Body Care"	442
-"Print Materials"	22609
-"Hair"	14
-"Baby Personal Care"	152
-"Fashion Textile"	597
-"Outdoor"	10
-"Body"	30
-"Styling"	91
-"Merchandise Material"	5240
-"Bath & Body Tools"	18
-"Wellness Routine Accessories"	5
-"Baby Fragrances"	40
-"Face Masks"	165
-"Hair Removers"	12
-"Hair Tools & Accessories"	11
-"Colourants"	24
-"Men Beauty Tools"	39
-"Hand"	18
-"Home Fragrance Candles"	17
-"Foot Care"	190
-"Toners"	130
-"Kitchenware"	203
-"Bath Additives"	93
-"Deco & Gifts_Charity"	7
-"Men Jewellery"	55
-"Women Pre-Shave"	8
-"Other Nail Products"	87
-"Hand Care"	227
-"Wellbeing"	15
-"Make-Up Palette"	8
-"Lipstick"	3438
-"Other Lip Products"	107
-"Dental Floss"	2
-"Fish Oils/Omega Fatty Acids"	9
-"Intimate Hygiene"	55
-"Jewellery_Charity"	11
-"Combination Herbal/Traditional Dietary Supplements"	5
-"Electronics"	36
-"Stationery"	9
-"Mascara"	313
-"Men Shaving & Grooming"	1
-"Fashion Accessory Other_Charity"	14
-"After Sun"	19
-"Deco & Gifts Others"	6
-"SkinCare Tools"	65
-"Sunglasses"	76
-"Jewellery"	239
-"Other Cosmetic Accessory"	9
-"Bathroom"	123
-"Calcium Supplements"	5
-"Female Promo"	92
+### segment_descr (cca 150)
 
 ### brand_descr (290)
 ```sql

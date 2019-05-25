@@ -1,40 +1,16 @@
-
-interface VerifyUser {
-
-}
-export const verifyUser = (args: VerifyUser) => {
-
-}
-
-interface SimilarProductsBySelectedId {
-
-}
-export const similarProductsBySelectedId = (args: SimilarProductsBySelectedId) => {
-
-}
-
-
-interface GetProductsByConfiguration {
-
-}
-export const getProductsByConfiguration = (args: GetProductsByConfiguration) => {
-
-}
-
-
-interface DifferentProductsByConsultant {
-
-}
-export const differentProductsByConsultant = (args: DifferentProductsByConsultant) => {
-
-}
+export { default as getProductsByIds } from './verifyUser'
+export { default as differentProductsByConsultant } from './differentProductsByConsultant'
+export { default as getProductsByConfiguration } from './getProductsByConfiguration'
+export { default as similarProductsBySelectedId } from './similarProductsBySelectedId'
 
 
 
-interface GetProductsByIds {
 
-}
-export const getProductsByIds = (args: GetProductsByIds) => {
 
-}
+
+// TODO: add
+// interface GetProductsByIds {
+// }
+// export const getProductsByIds = (args: GetProductsByIds) => {
+// }
 

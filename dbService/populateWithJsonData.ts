@@ -1,4 +1,4 @@
-import config from "../dbConfig";
+import config from "config";
 
 const fs = require("fs");
 const sql = require("mssql");
@@ -20,7 +20,7 @@ const sql = require("mssql");
     try {
       console.log(`Processing product with code: ${ProductCode}`);
 
-      const pool = await sql.connect(config);
+      const pool = await sql.connect(config.get("DATABASE"));
       const result = await pool
         .request()
         .query(

@@ -21,7 +21,7 @@ export const webhookRoot: RequestHandler = async (req, res) => {
 
                 await messenger.markSeen(entry.sender.id);
 
-                await messenger.sendTextMessage(entry.sender.id, `Na ${text} ti seru, kup si radši rtěnku`);
+                await messenger.sendTextMessage(entry.sender.id, `Screw your "${text}"! Buy a lipstick instead 💄`);
             }
         }
 
@@ -30,4 +30,4 @@ export const webhookRoot: RequestHandler = async (req, res) => {
     } catch (e) {
         res.status(500).send(JSON.stringify(e))
     }
-}
+};

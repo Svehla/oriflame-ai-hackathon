@@ -1,5 +1,8 @@
 import {RequestHandler} from "express";
 import {messenger, parser} from "../messaging";
+import {UserState} from "../UserState";
+
+const state: {[userId: string]: UserState} = {};
 
 export const webhookRoot: RequestHandler = async (req, res) => {
     const body = req.body;
@@ -15,14 +18,11 @@ export const webhookRoot: RequestHandler = async (req, res) => {
 
         // Iterates over each entry - there may be multiple if batched
         for (const entry of incomingMessages) {
-            if (entry.message) {
-                const text= entry.message.text;
-                console.info("MESSAGE:", entry.message.text);
+            const senderId = entry.sender.id;
 
-                await messenger.markSeen(entry.sender.id);
+            const userState = state[senderId] || (state[senderId] = new UserState(senderId));
 
-                await messenger.sendTextMessage(entry.sender.id, `Screw your "${text}"! Buy a lipstick instead 💄`);
-            }
+            await userState.transition(entry);
         }
 
         // Returns a '200 OK' response to all requests

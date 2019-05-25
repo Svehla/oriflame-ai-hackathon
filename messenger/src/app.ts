@@ -1,5 +1,5 @@
 import express from 'express';
-import config = require('config');
+import config = require("config");
 import bodyParser = require('body-parser');
 import {installRoutes} from "./routes";
 

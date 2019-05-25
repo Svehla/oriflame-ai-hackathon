@@ -4,7 +4,9 @@
   "description": "AI masterclass tensorflow HTML",
   "main": "index.js",
   "scripts": {
-    "start-db-service": "ts-node-dev --respawn --transpileOnly ./dbService/startDbService.ts"
+    "start-db-service": "ts-node-dev --respawn --transpileOnly ./dbService/startDbService.ts",
+    "messenger": "ts-node --transpileOnly messenger/index.ts",
+    "messenger-dev": "ts-node-dev messenger/index.ts"
   },
   "repository": {
     "type": "git",
@@ -18,9 +20,14 @@
   "homepage": "https://github.com/Svehla/oriflame-ai-hackathon#readme",
   "dependencies": {
     "@types/mssql": "^4.0.14",
+    "config": "latest",
+    "express": "latest",
+    "fb-messenger-bot-api": "latest",
     "mssql": "^5.1.0"
   },
   "devDependencies": {
+    "@types/config": "^0.0.34",
+    "@types/express": "^4.16.1",
     "ts-node-dev": "^1.0.0-pre.39",
     "typescript": "^3.4.5"
   }

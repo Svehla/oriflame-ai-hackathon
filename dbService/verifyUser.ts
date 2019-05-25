@@ -1,15 +1,25 @@
+import config from "config";
+const sql = require("mssql");
 
-type VerifyUserArgs = {
-  userId: string
-}
+const verifyUser = async (consultantId: string): Promise<boolean> => {
+  try {
+    const pool = await sql.connect(config.get("DATABASE"));
+    const result = await pool
+      .request()
+      .query(
+        `SELECT * FROM [dbo].CUSTOMERS WHERE CUSTOMER_ID_S='${consultantId}'`
+      );
 
-type IsVerified = {
-  isVerified: boolean
-}
-const verifyUser = async (args: VerifyUserArgs) => {
-  return {
-    isVerified: true
-  } as IsVerified
-}
+    sql.close();
 
-export default verifyUser
+    if (result.recordsets.length > 0) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    sql.close();
+    return false;
+  }
+};
+
+export default verifyUser;

@@ -1,5 +1,29 @@
 ## filters
 
+### Tags 
+
+E.g.:
+```json
+{
+    "GroupName": "Benefits",
+    "Tags": [{
+    "Value": "curling"
+    }]
+},
+{
+    "GroupName": "ColourFamilies",
+    "Tags": [{
+    "Value": "black"
+    }]
+},
+{
+    "GroupName": "Whos",
+    "Tags": [{
+    "Value": "women"
+    }]
+}
+```
+
 ### ColorHexCode -> color 
 
 String, e.g. "Black"

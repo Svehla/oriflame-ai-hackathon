@@ -1,9 +1,15 @@
 
 type VerifyUserArgs = {
-  userId:
+  userId: string
 }
-const verifyUser = (args: VerifyUserArgs): boolean => {
-  return true
+
+type IsVerified = {
+  isVerified: boolean
+}
+const verifyUser = async (args: VerifyUserArgs) => {
+  return {
+    isVerified: true
+  } as IsVerified
 }
 
 export default verifyUser

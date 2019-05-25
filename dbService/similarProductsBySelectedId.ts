@@ -1,11 +1,12 @@
+import { Product } from './types'
+import fakeProducts from './fakeProducts'
 
 type SimilarProductsBySelectedId = {
-
+  productIds: string[]
 }
-const similarProductsBySelectedId = (args: SimilarProductsBySelectedId) => {
-  return [
-    
-  ]
+const similarProductsBySelectedId = async (args: SimilarProductsBySelectedId) => {
+  // TODO: some magic code here 🤔
+  return fakeProducts as Product[]
 }
 
 

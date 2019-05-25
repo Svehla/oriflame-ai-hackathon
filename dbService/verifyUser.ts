@@ -7,7 +7,7 @@ const verifyUser = async (consultantId: string): Promise<boolean> => {
     const result = await pool
       .request()
       .query(
-        `SELECT * FROM [dbo].CUSTOMERS WHERE CUSTOMER_ID_S='${consultantId}'`
+        `SELECT * FROM [dbo].CUSTOMERS WHERE CONSULTANT_NUMBER_S='${consultantId}'`
       );
 
     sql.close();

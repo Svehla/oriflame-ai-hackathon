@@ -1,5 +1,17 @@
 import config from "config";
+import { Product } from "./types";
 const sql = require("mssql");
+
+const createProductFromServerModel = (serverModel: any) => {
+  const product: Product = {
+    id: serverModel.prod_cd,
+    name: serverModel.prod_descr,
+    thumbnailUrl: serverModel.thumbnail_url,
+    imageUrl: serverModel.image_url
+  };
+
+  return product;
+};
 
 async function getProducts() {
   try {
@@ -10,7 +22,7 @@ async function getProducts() {
 
     sql.close();
 
-    return result.
+    return result.recordsets[0].map(createProductFromServerModel);
   } catch (e) {
     sql.close();
     console.log(e);

@@ -1,0 +1,27 @@
+{
+  "name": "oriflame-ai-hackathon",
+  "version": "1.0.0",
+  "description": "AI masterclass tensorflow HTML",
+  "main": "index.js",
+  "scripts": {
+    "start-db-service": "ts-node-dev --respawn --transpileOnly ./dbService/startDbService.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Svehla/oriflame-ai-hackathon.git"
+  },
+  "author": "Jakub Svehla <svehl.jakub@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Svehla/oriflame-ai-hackathon/issues"
+  },
+  "homepage": "https://github.com/Svehla/oriflame-ai-hackathon#readme",
+  "dependencies": {
+    "@types/mssql": "^4.0.14",
+    "mssql": "^5.1.0"
+  },
+  "devDependencies": {
+    "ts-node-dev": "^1.0.0-pre.39",
+    "typescript": "^3.4.5"
+  }
+}

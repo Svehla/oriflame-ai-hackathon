@@ -49,4 +49,7 @@ async function processTextMessage(text, confidenceThreshold = 0.7) {
 
 }
 
-// processTextMessage(" show me black lipsticks")
+module.exports = {
+    processTextMessage: processTextMessage
+}
+// processTextMessage("I want something beautiful for my skin")

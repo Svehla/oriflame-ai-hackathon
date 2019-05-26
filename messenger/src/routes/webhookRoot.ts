@@ -1,8 +1,6 @@
 import {RequestHandler} from "express";
-import {messenger, parser} from "../messaging";
-import {UserState} from "../UserState";
-
-const state: {[userId: string]: UserState} = {};
+import {parser} from "../messaging";
+import {state, UserState} from "../UserState";
 
 export const webhookRoot: RequestHandler = async (req, res) => {
     const body = req.body;

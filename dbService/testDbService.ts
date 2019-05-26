@@ -46,8 +46,8 @@ const main = async () => {
       consultantId: '9D8671FCE',
       alreadySelectedItems: [],
     })
-    console.log('______')
-    console.log(similarProducts)
+    // console.log('______')
+    // console.log(similarProducts)
   } catch(e) {
     console.log(e)
   }

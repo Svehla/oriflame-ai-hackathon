@@ -21,7 +21,9 @@
   "homepage": "https://github.com/Svehla/oriflame-ai-hackathon#readme",
   "dependencies": {
     "@types/mssql": "^4.0.14",
+    "axios": "^0.18.0",
     "config": "latest",
+    "csv-parser": "^2.3.0",
     "express": "latest",
     "fb-messenger-bot-api": "latest",
     "mssql": "^5.1.0"

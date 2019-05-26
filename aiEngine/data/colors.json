@@ -1,0 +1,35 @@
+{
+    "entity": "color",
+    "values": [
+        {
+            "value": "red"
+        },
+        {
+            "value": "orange"
+        },
+        {
+            "value": "yellow"
+        },
+        {
+            "value": "green"
+        },
+        {
+            "value": "blue"
+        },
+        {
+            "value": "violet"
+        },
+        {
+            "value": "pink"
+        },
+        {
+            "value": "brown"
+        },
+        {
+            "value": "gray"
+        },
+        {
+            "value": "black"
+        }
+    ]
+}

@@ -13,5 +13,13 @@ module.exports = {
             encrypt: true,
             database: "xxx"
         }
+    },
+    "AI_ENGINE": {
+        "API_URL": "<API_URL>",
+        "API_KEY": "<API_KEY>",
+        "API_PASS": "<API_PASS>",
+        "ASSISTANT_ENDPNT": "xxx",
+        "WORKSPACE": "xxx",
+        "API_VERSION": "xxx"
     }
 };

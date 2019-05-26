@@ -191,6 +191,14 @@
                 } else {
                     this.cart.push(item.id);
                 }
+
+                fetch('/cart/update', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({cart: this.cart, id: userId})
+                });
             },
             isSelected(item) {
                 return this.selection.includes(item.id)
@@ -202,9 +210,8 @@
                 MessengerExtensions.requestCloseBrowser()
             },
             async refine() {
-                const result = await fetch('/refine', {
+                const result = await fetch('/browse/refine', {
                     method: "POST",
-                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
                     },

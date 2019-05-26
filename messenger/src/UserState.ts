@@ -1,12 +1,23 @@
-import {FacebookMessagePayloadMessagingEntry as Event,} from "fb-messenger-bot-api";
+import {FacebookMessagePayloadMessagingEntry } from "fb-messenger-bot-api";
 import {UserMessages} from "./messaging";
-import {differentProductsByConsultant, getProductsByConfiguration, verifyUser} from "../../dbService";
+import {differentProductsByConsultant, verifyUser} from "../../dbService";
 import config from "config";
 import {URL} from "url";
 
 const HOST: string = config.get("HOST");
 
 type State = "VALIDATING" | "BROWSING" | "ORDER_BRIEF" | "DONE" ;
+
+export interface WebViewTransitionEvent {
+    sender: {
+        id: string
+    },
+    transition: {
+        newState: State
+    }
+}
+
+type Event = FacebookMessagePayloadMessagingEntry | WebViewTransitionEvent;
 
 export class UserState {
     constructor(private userId: string) {
@@ -30,9 +41,12 @@ export class UserState {
             return;
         }
 
-        const newState = await transitionFunction(event, this.messenger, this);
+        try {
+            const newState = await transitionFunction(event, this.messenger, this);
+        } catch (e) {
+            console.error(e);
+        }
 
-        this.state = newState || this.state;
     }
 }
 
@@ -62,8 +76,8 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
                 console.info('SHOW BASE PRODUCTS');
 
                 const url = new URL(HOST);
-                url.pathname = 'carousel';
-                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({consultantId:consultantNumber})));
+                url.pathname = 'browse';
+                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({consultantId: consultantNumber, alreadySelectedItems: []})));
                 url.searchParams.set('cart', '[]');
                 url.searchParams.set('selection', '[]');
                 url.searchParams.set('id', event.sender.id);

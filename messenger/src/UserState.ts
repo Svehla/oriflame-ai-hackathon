@@ -1,11 +1,10 @@
-import {
-    BUTTON_TYPE,
-    FacebookMessagePayloadMessagingEntry as Event,
-    IPostbackButton,
-    IURLButton
-} from "fb-messenger-bot-api";
+import {FacebookMessagePayloadMessagingEntry as Event,} from "fb-messenger-bot-api";
 import {UserMessages} from "./messaging";
-import {verifyUser} from "../../dbService";
+import {differentProductsByConsultant, getProductsByConfiguration, verifyUser} from "../../dbService";
+import config from "config";
+import {URL} from "url";
+
+const HOST: string = config.get("HOST");
 
 type State = "VALIDATING" | "BROWSING" | "ORDER_BRIEF" | "DONE" ;
 
@@ -16,6 +15,10 @@ export class UserState {
     private messenger = new UserMessages(this.userId);
 
     public state: State = "VALIDATING";
+
+    public cart: string[] = [];
+
+    public selection: string[] = [];
 
     async transition(event: Event) {
         await this.messenger.markSeen();
@@ -53,25 +56,32 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages) => P
             const isVerified = await verifyUser(userId).catch(_ => false);
             if (isVerified) {
                 console.info('SHOW BASE PRODUCTS');
-                debugger;
+
+                const url = new URL(HOST);
+                url.pathname = 'carousel';
+                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant(userId)));
+                url.searchParams.set('cart', '[]');
+                url.searchParams.set('selection', '[]');
+                url.searchParams.set('id', userId);
+
                 await messenger.sendButtonsMessage(
                     "To help you get started, we've gathered products you're most likely to want in your first order",
                     [
                         {
                             type: "web_url",
-                            url: "https://example.com",
-                            title: "Begin",
+                            url: url.href,
+                            title: "Start browsing",
                             webview_height_ratio: "compact",
-                            messenger_extensions: "true",
-                            fallback_url: "https://example.com/"
-                        } as any,
-                        {
-                            type: BUTTON_TYPE.POSTBACK,
-                            title: "I know what I want",
-                            payload: "user-search"
-                        } as IPostbackButton,
+                            messenger_extensions: "true"
+                        } as any
                     ]
                 );
+
+                setTimeout(async () => {
+                    messenger.toggleTyping(true);
+                    await (new Promise(r => setTimeout(r, 2000)));
+                    messenger.sendTextMessage("...or type your search terms if you already know what you want")
+                }, 3000);
                 return "BROWSING";
             } else {
                 console.info('COULDN\'T VERIFY');
@@ -80,3 +90,5 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages) => P
         }
     }
 };
+
+export const state: { [userId: string]: UserState } = {};

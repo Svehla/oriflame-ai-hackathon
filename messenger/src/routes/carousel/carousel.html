@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Oriflame items</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link href="https://cdn.lineicons.com/1.0.1/LineIcons.min.css" rel="stylesheet">
+    <!-- Messenger Extensions SDK -->
+    <script>
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/en_US/messenger.Extensions.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'Messenger'));
+    </script>
+    <!-- END Messenger Extensions SDK -->
+    <style>
+        body {
+            font-family: "Segoe UI", "San Francisco", "Roboto", "Liberation Sans", sans-serif;
+            font-size: 15px;
+            padding: 6px;
+            margin: 0;
+        }
+
+        .carousel {
+            overflow-x: scroll;
+            display: flex;
+            flex-flow: row;
+            scrollbar-width: none; /* Firefox */
+            scroll-snap-type: x mandatory;
+        }
+
+        .carousel::-webkit-scrollbar { /* WebKit */
+            width: 0;
+            height: 0;
+        }
+
+        .toolbar {
+            margin-top: 10px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            text-align: right;
+            white-space: nowrap;
+            color: #0084FF;
+        }
+
+        .toolbar button, .toolbar a {
+            color: inherit;
+            font: inherit;
+            text-decoration: none;
+            padding: 10px 20px;
+
+            border: 1px solid currentColor;
+            border-radius: 20px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .toolbar a:visited {
+            color: inherit;
+        }
+
+        .toolbar button:active, .toolbar a:active {
+            background: rgba(0, 132, 255, 0.1);
+        }
+
+        .carousel-item {
+            scroll-snap-align: start;
+            max-width: 30vw;
+            min-width: 200px;
+            height: 270px;
+            margin-right: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-flow: column;
+
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .carousel-item:last-of-type {
+            margin-right: 0;
+        }
+
+        .product-link {
+            display: block;
+            text-decoration: none;
+            border: none;
+            font-size: 0;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 170px;
+            object-fit: cover;
+            object-position: center center;
+        }
+
+        .carousel-item h2 {
+            margin: 0;
+            padding: 6px 12px;
+            text-overflow: ellipsis;
+            font-size: inherit;
+            font-weight: inherit;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .carousel-item-actions {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .carousel-item-actions .icon {
+            flex: 1;
+            font-size: 30px;
+            padding: 20px;
+            box-sizing: border-box;
+            color: rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        .carousel-item-actions .icon.selected {
+            color: #0084FF;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="carousel">
+        <article class="carousel-item" v-for="item in items">
+            <a :href="'https://in.oriflame.com/products/product?code='+item.id" class="product-link">
+                <img :src="item.thumbnailUrl" :alt="item.name"/>
+            </a>
+            <h2>{{item.name}}</h2>
+            <div class="carousel-item-actions">
+                <i class="icon lni-heart" :class="{selected: isSelected(item)}" @click="toggleSelect(item)"></i>
+                <i class="icon lni-cart" :class="{selected: isInCart(item)}" @click="toggleCart(item)"></i>
+            </div>
+        </article>
+    </div>
+    <div class="toolbar">
+        <button>Refine</button>
+        <button @click="close">Search</button>
+        <a href="cart">Cart</a>
+    </div>
+</div>
+<script>
+    const queryParams = new URL(location.href.toString()).searchParams;
+    let items = [];
+    let selection = [];
+    let cart = [];
+    let userId;
+    try {
+        items = JSON.parse(queryParams.get('items') || '[]');
+        cart = JSON.parse(queryParams.get('cart') || '[]');
+        selection = JSON.parse(queryParams.get('selection') || '[]');
+        userId = queryParams.get('userId');
+    } catch (e) {
+        console.error(e);
+    }
+
+    const app = new Vue({
+        el: '#app',
+        data: {
+            cart,
+            selection,
+            items
+        },
+        methods: {
+            toggleSelect(item) {
+                if (this.selection.includes(item.id)) {
+                    this.selection = this.selection.filter(i => i !== item.id)
+                } else {
+                    this.selection.push(item.id);
+                }
+            },
+            toggleCart(item) {
+                if (this.cart.includes(item.id)) {
+                    this.cart = this.cart.filter(i => i !== item.id)
+                } else {
+                    this.cart.push(item.id);
+                }
+            },
+            isSelected(item) {
+                return this.selection.includes(item.id)
+            },
+            isInCart(item) {
+                return this.cart.includes(item.id);
+            },
+            close() {
+                MessengerExtensions.requestCloseBrowser()
+            },
+            async refine() {
+                const result = await fetch({
+                    method: "post",
+                    url: "/refine",
+                    body: JSON.stringify({selection: this.selection, cart: this.cart})
+                });
+
+                if (!result.ok) {
+                    return;
+                }
+
+                const {items, selection, cart} = await result.json();
+                this.items = items;
+                this.selection = selection;
+                this.cart = cart;
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -34,7 +34,9 @@ startDbService();
 
 import {
   verifyUser,
-  differentProductsByConsultant
+  differentProductsByConsultant,
+  getProductsByConfiguration,
+  similarProductsBySelectedId,
 } from './index'
 const main = async () => {
   try {
@@ -42,12 +44,30 @@ const main = async () => {
     // const isUserVerified = await verifyUser('9D8671FCE')
     // console.log(lol)
 
-    const similarProducts = await differentProductsByConsultant({
-      consultantId: '9D8671FCE',
-      alreadySelectedItems: [],
-    })
+    // const similarProducts = await differentProductsByConsultant({
+    //   consultantId: '9D8671FCE',
+    //   alreadySelectedItems: [],
+    // })
     // console.log('______')
     // console.log(similarProducts)
+
+    const similarProducts = await similarProductsBySelectedId({
+      productIds: ['37871']
+      // name: null,
+      // color: null,
+      // category: null,
+      // product_name: null,
+      // sector: null,
+      // segment: null,
+      // brand: null,
+      // subbrand: null,
+      // type: null,
+      // team_category: null,
+      // price_segment: null,
+    })
+    console.log('______')
+    console.log(similarProducts)
+
   } catch(e) {
     console.log(e)
   }

@@ -1,5 +1,6 @@
 import {RequestHandler} from "express";
 import {state} from "../../UserState";
+import { getProductsByIds } from "../../../../dbService";
 
 interface UpdateCartBody {
     id: string,
@@ -13,8 +14,11 @@ export const update: RequestHandler = async (req, res) => {
 
         userState.cart = body.cart;
 
+        const cartItems = await getProductsByIds(body.cart);
+
         res.send({
-            cart: userState.cart
+            cart: userState.cart,
+            cartItems: cartItems,
         })
     } catch (e) {
         res.status(500);

@@ -155,7 +155,7 @@
     <div class="toolbar">
         <button @click="refine">Refine</button>
         <button @click="close">Search</button>
-        <a href="/cart">Cart</a>
+        <a :href="getCartLink()">Cart</a>
     </div>
 </div>
 <script>
@@ -229,6 +229,14 @@
                 this.items = items;
                 this.selection = selection;
                 this.cart = cart;
+            },
+            getCartLink() {
+                const params = new URLSearchParams({
+                    id: userId,
+                    cart: JSON.stringify(this.cart)
+                })
+
+                return "/cart?"+params.toString();
             }
         }
     })

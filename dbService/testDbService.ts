@@ -1,45 +1,13 @@
-/*
-import config from "config";
-import { Request, ConnectionPool, default as sql } from "mssql";
-
-declare module "mssql" {
-  export const connect: any;
-}
-
-const startDbService = () => {
-  sql.connect(config.get("DATABASE"), (error: Error) => {
-    if (error) {
-      // response.send(error);
-    }
-
-    const request = new Request();
-
-    request.query("SELECT TOP(10) * FROM [dbo].CUSTOMERS", function(
-      error,
-      data
-    ) {
-      if (!data) {
-        return;
-      }
-
-      console.log(data.recordset[0]);
-      // if (error) response.send(error);
-      // response.send(data);
-    });
-  });
-};
-
-startDbService();
-*/
 import { processTextMessage } from '../aiEngine/watson';
-
 
 import {
   verifyUser,
   differentProductsByConsultant,
   getProductsByConfiguration,
   similarProductsBySelectedId,
+  getProductsByIds,
 } from './index'
+
 const main = async () => {
   try {
 
@@ -60,25 +28,15 @@ const main = async () => {
     // console.log('______')
     // console.log(similarProducts)
 
-    const processMessageResponse = await processTextMessage('lipstick')
-    const similarProducts = await getProductsByConfiguration(processMessageResponse)
-      // {
-      //   name: null,
-      //   color: null,
-      //   category: null,
-      //   product_name: null,
-      //   sector: null,
-      //   segment: null,
-      //   brand: null,
-      //   subbrand: null,
-      //   type: null,
-      //   team_category: null,
-      //   price_segment: null,
-      // }
-    // )
+    // const processMessageResponse = await processTextMessage('lipstick')
+    // const similarProducts = await getProductsByConfiguration(processMessageResponse)
+    // console.log('_________________')
+    // console.log(similarProducts)
 
-    console.log('_________________')
-    console.log(similarProducts)
+    // const productsByIds = await getProductsByIds(['33313', '33488'])
+    // console.log('_________________')
+    // console.log('productsByIds:')
+    // console.log(productsByIds)
 
   } catch(e) {
     console.log(e)

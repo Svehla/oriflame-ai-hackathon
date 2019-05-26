@@ -5,6 +5,7 @@ import {browse} from "./browse";
 import {refine} from "./browse/refine";
 import {update} from "./cart/update";
 import {webViewTransition} from "./webViewTransition";
+import {cart} from './cart';
 
 export function installRoutes(app: Express) {
     app.get('/webhook', verify);
@@ -14,6 +15,7 @@ export function installRoutes(app: Express) {
     app.get('/browse', browse);
 
     app.post('/cart/update', update);
+    app.get('/cart', cart)
 
     app.post('/transition-state', webViewTransition)
 }

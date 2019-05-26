@@ -51,21 +51,24 @@ const main = async () => {
     // console.log('______')
     // console.log(similarProducts)
 
-    const similarProducts = await similarProductsBySelectedId({
-      productIds: ['37871']
-      // name: null,
-      // color: null,
-      // category: null,
-      // product_name: null,
-      // sector: null,
-      // segment: null,
-      // brand: null,
-      // subbrand: null,
-      // type: null,
-      // team_category: null,
-      // price_segment: null,
+    // const similarProducts = await similarProductsBySelectedId({
+    //   productIds: ['37871']
+    // })
+
+    const similarProducts = await getProductsByConfiguration({
+      name: null,
+      color: null,
+      category: null,
+      product_name: null,
+      sector: null,
+      segment: null,
+      brand: null,
+      subbrand: null,
+      type: null,
+      team_category: null,
+      price_segment: null,
     })
-    console.log('______')
+    console.log('_________________')
     console.log(similarProducts)
 
   } catch(e) {

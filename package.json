@@ -27,7 +27,8 @@
     "csv-parser": "^2.3.0",
     "express": "latest",
     "fb-messenger-bot-api": "latest",
-    "mssql": "^5.1.0"
+    "mssql": "^5.1.0",
+    "ramda": "^0.26.1"
   },
   "devDependencies": {
     "@types/config": "^0.0.34",

@@ -98,6 +98,7 @@ const differentProductsByConsultant = async (args: DifferentProductsByConsultant
       WHERE category_descr = '${categories[0]}'
       AND thumbnail_url <> ''
       AND image_url <> ''
+      ORDER BY RAND()
   `);
 
   sql.close();

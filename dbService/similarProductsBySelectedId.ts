@@ -24,8 +24,9 @@ const similarProductsBySelectedId = async (args: SimilarProductsBySelectedId): P
       TOP(5) *
       FROM PRODUCTS
     WHERE category_descr IN (${productsByIds.map(({ category_descr }) => `'${ category_descr}'`).join(',')})
-    AND thumbnail_url <> ''
-    AND image_url <> ''
+      AND thumbnail_url <> ''
+      AND image_url <> ''
+    ORDER BY RAND()
     `
   );
   

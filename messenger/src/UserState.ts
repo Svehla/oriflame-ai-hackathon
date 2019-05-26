@@ -1,13 +1,13 @@
-import {FacebookMessagePayloadMessagingEntry } from "fb-messenger-bot-api";
-import {UserMessages} from "./messaging";
-import {differentProductsByConsultant, verifyUser, getProductsByConfiguration} from "../../dbService";
+import { FacebookMessagePayloadMessagingEntry } from "fb-messenger-bot-api";
+import { UserMessages } from "./messaging";
+import { differentProductsByConsultant, verifyUser, getProductsByConfiguration } from "../../dbService";
 import config from "config";
-import {URL} from "url";
-import {processTextMessage} from '../../aiEngine/watson';
+import { URL } from "url";
+import { processTextMessage } from '../../aiEngine/watson';
 
 const HOST: string = config.get("HOST");
 
-type State = "VALIDATING" | "BROWSING" | "ORDER_BRIEF" | "DONE" ;
+type State = "VALIDATING" | "BROWSING" | "ORDER_BRIEF" | "DONE";
 
 export interface WebViewTransitionEvent {
     sender: {
@@ -32,7 +32,7 @@ export class UserState {
 
     public selection: string[] = [];
 
-    public consultantNumber: string|undefined;
+    public consultantNumber: string | undefined;
 
     async transition(event: Event) {
         await this.messenger.markSeen();
@@ -52,15 +52,25 @@ export class UserState {
     }
 }
 
+function getRandomIdx(intervalLen: number) {
+    const max = Math.floor(intervalLen - 1);
+    return Math.floor(Math.random() * (max - 1)); //The maximum is inclusive
+}
+
 const transitions: { [key: string]: (event: Event, messenger: UserMessages, state: UserState) => Promise<State | undefined> } = {
     "VALIDATING": async (event: Event, messenger: UserMessages, state) => {
+        const welcomeMsgs = [
+            "Hello, and welcome to Oriflame 👋. Please type in your Consultant Number, so I can recommend you some products.",
+            "Hello! 🙋 Welcome to Oriflame. Before I show you the products, message me your Consultant Number, please."
+        ]
+
         const isIntro =
             event.postback
             || (event.message && event.message.text && ["hello", "hi"].includes(event.message.text.trim().toLowerCase()));
 
         if (isIntro) {
             await messenger.toggleTyping(true);
-            await messenger.sendTextMessage("Hello, and welcome to Oriflame. Please type in your Consultant Number to get started");
+            await messenger.sendTextMessage(welcomeMsgs[getRandomIdx(welcomeMsgs.length)]);
         } else if (event.message) {
             const text = event.message.text;
             if (!text) {
@@ -79,13 +89,18 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
 
                 const url = new URL(HOST);
                 url.pathname = 'browse';
-                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({consultantId: consultantNumber, alreadySelectedItems: []})));
+                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({ consultantId: consultantNumber, alreadySelectedItems: [] })));
                 url.searchParams.set('cart', '[]');
                 url.searchParams.set('selection', '[]');
                 url.searchParams.set('id', event.sender.id);
 
+                const startBrowsingTexts = [
+                    "To help you get started, I've gathered products you could probably have in your first order 😁.",
+                    "To help you with the first order, I've gathered some products that may be suitable for you and your customers 😇."
+                ]
+
                 await messenger.sendButtonsMessage(
-                    "To help you get started, we've gathered products you're most likely to want in your first order",
+                    startBrowsingTexts[getRandomIdx(startBrowsingTexts.length)],
                     [
                         {
                             type: "web_url",
@@ -97,22 +112,30 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
                     ]
                 );
 
+                const textMeTexts = [
+                    "...or text me what you would like me to recommend you 😉.",
+                    "...or message me with what you would like me to recommend you 😉."
+                ]
                 setTimeout(async () => {
                     messenger.toggleTyping(true);
                     await (new Promise(r => setTimeout(r, 2000)));
-                    messenger.sendTextMessage("...or type your search terms if you already know what you want")
+                    messenger.sendTextMessage(textMeTexts[getRandomIdx(textMeTexts.length)])
                 }, 3000);
                 return "BROWSING";
             } else {
                 console.info('COULDN\'T VERIFY');
-                await messenger.sendTextMessage(`We can't seem to find ${consultantNumber} in our list of Oriflame Consultants. Please make sure your number was correct and try entering it again`);
+                const notVerifiedTexts = [
+                    `I couldn't find any consultant with the number ${consultantNumber} in our list 😕. Please make sure you've sent me the right number and try it again.`,
+                    `I'm not able to find your number ${consultantNumber} in our list of Oriflame Consultants 😕. Please make sure you've sent me the right number and try it again.`
+                ]
+                await messenger.sendTextMessage(notVerifiedTexts[getRandomIdx(notVerifiedTexts.length)]);
             }
         }
     },
     "BROWSING": async (event: Event, messenger: UserMessages, state) => {
         if (event.message) {
             const message = event.message.text;
-            console.info("WILL SEARCH:",message)
+            console.info("WILL SEARCH:", message)
 
             const intents = await processTextMessage(message);
 
@@ -124,13 +147,17 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
             if (Object.values(intents).every(intent => intent === null)) {
                 const url = new URL(HOST);
                 url.pathname = 'browse';
-                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({consultantId: state.consultantNumber, alreadySelectedItems: state.selection})));
+                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({ consultantId: state.consultantNumber, alreadySelectedItems: state.selection })));
                 url.searchParams.set('cart', JSON.stringify(state.cart));
                 url.searchParams.set('selection', JSON.stringify(state.selection));
                 url.searchParams.set('id', event.sender.id);
 
+                const nothingFoundTexts = [
+                    "I couldn't find what you were looking for 😔. But you can try it again and I believe I'll be more successfull this time 😉.",
+                    "I wasn't able to find what you were looking for 😔. But I believe I'll be more successfull next time 😉."
+                ]
                 await messenger.sendButtonsMessage(
-                    "We didn't find what you were looking for. But you might want to give a try to what we picked out for you",
+                    nothingFoundTexts[getRandomIdx(nothingFoundTexts.length)],
                     [
                         {
                             type: "web_url",
@@ -146,7 +173,7 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
 
             const items = await getProductsByConfiguration(intents);
             state.selection = [];
-            
+
             const url = new URL(HOST);
             url.pathname = 'browse';
             url.searchParams.set('items', JSON.stringify(items));
@@ -154,8 +181,12 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
             url.searchParams.set('selection', JSON.stringify(state.selection));
             url.searchParams.set('id', event.sender.id);
 
+            const browsingTexts = [
+                "I've found some products I bet you will like 😉.",
+                "Here're some products you may like 😁."
+            ]
             await messenger.sendButtonsMessage(
-                "We found some results you will like",
+                browsingTexts[getRandomIdx(browsingTexts.length)],
                 [
                     {
                         type: "web_url",
@@ -170,5 +201,8 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
         }
     }
 };
+
+
+
 
 export const state: { [userId: string]: UserState } = {};

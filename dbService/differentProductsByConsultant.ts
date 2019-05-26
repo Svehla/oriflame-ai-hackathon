@@ -6,7 +6,7 @@ import config from "config";
 const sql = require("mssql");
 
 type Consultant = {
-  gender: "F|M";
+  gender: "F"|"M";
   city: string;
   birthDate: string;
   recruitDate: string;

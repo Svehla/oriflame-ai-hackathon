@@ -31,6 +31,7 @@
         }
 
         .carousel {
+            width: calc(100vw - 12px);
             overflow-x: scroll;
             display: flex;
             flex-flow: row;
@@ -109,6 +110,8 @@
         .carousel-item h2 {
             margin: 0;
             padding: 6px 12px;
+            white-space: nowrap;
+            overflow: hidden;
             text-overflow: ellipsis;
             font-size: inherit;
             font-weight: inherit;
@@ -152,7 +155,7 @@
     <div class="toolbar">
         <button @click="refine">Refine</button>
         <button @click="close">Search</button>
-        <a href="cart">Cart</a>
+        <a href="/cart">Cart</a>
     </div>
 </div>
 <script>

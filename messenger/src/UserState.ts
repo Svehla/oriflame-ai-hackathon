@@ -1,8 +1,9 @@
 import {FacebookMessagePayloadMessagingEntry } from "fb-messenger-bot-api";
 import {UserMessages} from "./messaging";
-import {differentProductsByConsultant, verifyUser} from "../../dbService";
+import {differentProductsByConsultant, verifyUser, getProductsByConfiguration} from "../../dbService";
 import config from "config";
 import {URL} from "url";
+import {processTextMessage} from '../../aiEngine/watson';
 
 const HOST: string = config.get("HOST");
 
@@ -17,7 +18,7 @@ export interface WebViewTransitionEvent {
     }
 }
 
-type Event = FacebookMessagePayloadMessagingEntry | WebViewTransitionEvent;
+type Event = FacebookMessagePayloadMessagingEntry & WebViewTransitionEvent;
 
 export class UserState {
     constructor(private userId: string) {
@@ -43,6 +44,7 @@ export class UserState {
 
         try {
             const newState = await transitionFunction(event, this.messenger, this);
+            this.state = newState || this.state;
         } catch (e) {
             console.error(e);
         }
@@ -105,6 +107,66 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages, stat
                 console.info('COULDN\'T VERIFY');
                 await messenger.sendTextMessage(`We can't seem to find ${consultantNumber} in our list of Oriflame Consultants. Please make sure your number was correct and try entering it again`);
             }
+        }
+    },
+    "BROWSING": async (event: Event, messenger: UserMessages, state) => {
+        if (event.message) {
+            const message = event.message.text;
+            console.info("WILL SEARCH:",message)
+
+            const intents = await processTextMessage(message);
+
+            if (!state.consultantNumber) {
+                console.error("Invalid state: BROWSING, while consultant number not set");
+                return "BROWSING";
+            }
+
+            if (Object.values(intents).every(intent => intent === null)) {
+                const url = new URL(HOST);
+                url.pathname = 'browse';
+                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({consultantId: state.consultantNumber, alreadySelectedItems: state.selection})));
+                url.searchParams.set('cart', JSON.stringify(state.cart));
+                url.searchParams.set('selection', JSON.stringify(state.selection));
+                url.searchParams.set('id', event.sender.id);
+
+                await messenger.sendButtonsMessage(
+                    "We didn't find what you were looking for. But you might want to give a try to what we picked out for you",
+                    [
+                        {
+                            type: "web_url",
+                            url: url.href,
+                            title: "Start browsing",
+                            webview_height_ratio: "compact",
+                            messenger_extensions: "true"
+                        } as any
+                    ]
+                );
+                return;
+            }
+
+            const items = await getProductsByConfiguration(intents);
+            state.selection = [];
+            
+            const url = new URL(HOST);
+            url.pathname = 'browse';
+            url.searchParams.set('items', JSON.stringify(items));
+            url.searchParams.set('cart', JSON.stringify(state.cart));
+            url.searchParams.set('selection', JSON.stringify(state.selection));
+            url.searchParams.set('id', event.sender.id);
+
+            await messenger.sendButtonsMessage(
+                "We found some results you will like",
+                [
+                    {
+                        type: "web_url",
+                        url: url.href,
+                        title: "Start browsing",
+                        webview_height_ratio: "compact",
+                        messenger_extensions: "true"
+                    } as any
+                ]
+            );
+            return;
         }
     }
 };

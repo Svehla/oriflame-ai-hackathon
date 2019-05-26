@@ -77,6 +77,7 @@ type DifferentProductsByConsultantArgs = {
   alreadySelectedItems: string[]
 }
 const differentProductsByConsultant = async (args: DifferentProductsByConsultantArgs): Promise<Product[]> => {
+  
   const consultant = await getConsultantById(args.consultantId)
 
   const categories = [
@@ -91,20 +92,29 @@ const differentProductsByConsultant = async (args: DifferentProductsByConsultant
   ]
   const pool = await sql.connect(config.get("DATABASE"));
   
-  const differentProducts = await pool.request().query(`
-    SELECT
-      TOP(5) *
-      FROM PRODUCTS
-      WHERE category_descr = '${categories[0]}'
-      AND thumbnail_url <> ''
-      AND image_url <> ''
-      ORDER BY RAND()
-  `);
+  let differentProducts = []
+
+  for (let category of categories) {
+    const productsByCategory = await pool.request().query(`
+      SELECT
+        TOP(1) *
+        FROM PRODUCTS
+        WHERE category_descr = '${category}'
+        AND thumbnail_url <> ''
+        AND image_url <> ''
+      ORDER BY newid()
+    `);
+  
+    differentProducts = [
+      ...differentProducts,
+      ...productsByCategory.recordset
+    ]
+  }
+
 
   sql.close();
 
-
-  return differentProducts.recordset.map(product => ({
+  return differentProducts.map(product => ({
     id: product.prod_cd,
     name: product.prod_descr,
     thumbnailUrl: product.thumbnail_url,

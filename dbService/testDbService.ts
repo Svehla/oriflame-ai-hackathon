@@ -31,6 +31,8 @@ const startDbService = () => {
 
 startDbService();
 */
+import { processTextMessage } from '../aiEngine/watson';
+
 
 import {
   verifyUser,
@@ -44,30 +46,37 @@ const main = async () => {
     // const isUserVerified = await verifyUser('9D8671FCE')
     // console.log(lol)
 
-    // const similarProducts = await differentProductsByConsultant({
+    // const differentProducts = await differentProductsByConsultant({
     //   consultantId: '9D8671FCE',
     //   alreadySelectedItems: [],
     // })
     // console.log('______')
-    // console.log(similarProducts)
+    // console.log(differentProducts)
+
 
     // const similarProducts = await similarProductsBySelectedId({
-    //   productIds: ['37871']
+    //   productIds: ['33313', '33520', '33727']
     // })
+    // console.log('______')
+    // console.log(similarProducts)
 
-    const similarProducts = await getProductsByConfiguration({
-      name: null,
-      color: null,
-      category: null,
-      product_name: null,
-      sector: null,
-      segment: null,
-      brand: null,
-      subbrand: null,
-      type: null,
-      team_category: null,
-      price_segment: null,
-    })
+    const processMessageResponse = await processTextMessage('lipstick')
+    const similarProducts = await getProductsByConfiguration(processMessageResponse)
+      // {
+      //   name: null,
+      //   color: null,
+      //   category: null,
+      //   product_name: null,
+      //   sector: null,
+      //   segment: null,
+      //   brand: null,
+      //   subbrand: null,
+      //   type: null,
+      //   team_category: null,
+      //   price_segment: null,
+      // }
+    // )
+
     console.log('_________________')
     console.log(similarProducts)
 

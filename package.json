@@ -23,6 +23,7 @@
     "@types/mssql": "^4.0.14",
     "axios": "^0.18.0",
     "config": "latest",
+    "cors": "latest",
     "csv-parser": "^2.3.0",
     "express": "latest",
     "fb-messenger-bot-api": "latest",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@types/config": "^0.0.34",
+    "@types/cors": "^2.8.5",
     "@types/express": "^4.16.1",
     "ts-node-dev": "^1.0.0-pre.39",
     "typescript": "^3.4.5"

@@ -26,6 +26,8 @@
             font-size: 15px;
             padding: 6px;
             margin: 0;
+            display: flex;
+            align-items: center;
         }
 
         .carousel {
@@ -148,7 +150,7 @@
         </article>
     </div>
     <div class="toolbar">
-        <button>Refine</button>
+        <button @click="refine">Refine</button>
         <button @click="close">Search</button>
         <a href="cart">Cart</a>
     </div>
@@ -163,7 +165,7 @@
         items = JSON.parse(queryParams.get('items') || '[]');
         cart = JSON.parse(queryParams.get('cart') || '[]');
         selection = JSON.parse(queryParams.get('selection') || '[]');
-        userId = queryParams.get('userId');
+        userId = queryParams.get('id');
     } catch (e) {
         console.error(e);
     }
@@ -200,10 +202,13 @@
                 MessengerExtensions.requestCloseBrowser()
             },
             async refine() {
-                const result = await fetch({
-                    method: "post",
-                    url: "/refine",
-                    body: JSON.stringify({selection: this.selection, cart: this.cart})
+                const result = await fetch('/refine', {
+                    method: "POST",
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({selection: this.selection, cart: this.cart, id: userId})
                 });
 
                 if (!result.ok) {

@@ -20,6 +20,8 @@ export class UserState {
 
     public selection: string[] = [];
 
+    public consultantNumber: string|undefined;
+
     async transition(event: Event) {
         await this.messenger.markSeen();
         const transitionFunction = transitions[this.state];
@@ -28,14 +30,14 @@ export class UserState {
             return;
         }
 
-        const newState = await transitionFunction(event, this.messenger);
+        const newState = await transitionFunction(event, this.messenger, this);
 
         this.state = newState || this.state;
     }
 }
 
-const transitions: { [key: string]: (event: Event, messenger: UserMessages) => Promise<State | undefined> } = {
-    "VALIDATING": async (event: Event, messenger: UserMessages) => {
+const transitions: { [key: string]: (event: Event, messenger: UserMessages, state: UserState) => Promise<State | undefined> } = {
+    "VALIDATING": async (event: Event, messenger: UserMessages, state) => {
         const isIntro =
             event.postback
             || (event.message && event.message.text && ["hello", "hi"].includes(event.message.text.trim().toLowerCase()));
@@ -51,18 +53,20 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages) => P
 
             console.info('VERIFYING USER');
             await messenger.toggleTyping(true);
-            const userId = text.trim();
+            const consultantNumber = text.trim();
 
-            const isVerified = await verifyUser(userId).catch(_ => false);
+            const isVerified = await verifyUser(consultantNumber).catch(_ => false);
             if (isVerified) {
+                state.consultantNumber = consultantNumber;
+
                 console.info('SHOW BASE PRODUCTS');
 
                 const url = new URL(HOST);
                 url.pathname = 'carousel';
-                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant(userId)));
+                url.searchParams.set('items', JSON.stringify(await differentProductsByConsultant({consultantId:consultantNumber})));
                 url.searchParams.set('cart', '[]');
                 url.searchParams.set('selection', '[]');
-                url.searchParams.set('id', userId);
+                url.searchParams.set('id', event.sender.id);
 
                 await messenger.sendButtonsMessage(
                     "To help you get started, we've gathered products you're most likely to want in your first order",
@@ -85,7 +89,7 @@ const transitions: { [key: string]: (event: Event, messenger: UserMessages) => P
                 return "BROWSING";
             } else {
                 console.info('COULDN\'T VERIFY');
-                await messenger.sendTextMessage(`We can't seem to find ${userId} in our list of Oriflame Consultants. Please make sure your number was correct and try entering it again`);
+                await messenger.sendTextMessage(`We can't seem to find ${consultantNumber} in our list of Oriflame Consultants. Please make sure your number was correct and try entering it again`);
             }
         }
     }

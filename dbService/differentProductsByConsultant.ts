@@ -1,15 +1,20 @@
 import { Product } from "./types";
 import getProducts from "./getProducts";
-import getConsultantById from "./getConsultantById";
+import getConsultantById from "./getConsultantById"
+import config from "config"
+import * as sql from "mssql"
 
-import config from "config";
-const sql = require("mssql");
 
+// ===========================================================
+// ===========================================================
+// ===========================================================
 type Consultant = {
-  gender: "F"|"M";
-  city: string;
-  birthDate: string;
-  recruitDate: string;
+  consultantId: string
+  alreadySelectedItems: string[]
+  // gender: "F"|"M"
+  // city: string
+  // birthDate: string
+  // recruitDate: string
 };
 
 const createConsultantFromServerModel = (serverModel: any) => {
@@ -23,7 +28,10 @@ const createConsultantFromServerModel = (serverModel: any) => {
   return consultant;
 };
 
-async function findSimilarConsultants(currentConsultant: Consultant) {
+type findSimilarConsultantsArgs = {
+  constulantId: string
+}
+async function findSimilarConsultants(currentConsultant: findSimilarConsultantsArgs) {
   const { gender, city, recruitDate, birthDate } = currentConsultant;
   // PRVNICH 5 konzultantu
   // s nejblizsim birth date
@@ -32,7 +40,8 @@ async function findSimilarConsultants(currentConsultant: Consultant) {
 
   try {
     const pool = await sql.connect(config.get("DATABASE"));
-    const result = await pool.request().query(`SELECT TOP(5) * FROM CUSTOMERS
+    const result = await pool.request().query(`
+        SELECT TOP(5) * FROM CUSTOMERS
         WHERE city=${city}
         AND GENDER=${gender}
         AND convert(datetime, ${recruitDate}) < DATEADD(day, -${recruitDateTresholdInDays}, getdate()))
@@ -45,10 +54,11 @@ async function findSimilarConsultants(currentConsultant: Consultant) {
 
     recruitDateTresholdInDays = 60;
     const resultWithIncreasedThreshold = await pool.request()
-      .query(`SELECT TOP(5) * FROM CUSTOMERS
-        WHERE city=${city}
-        AND GENDER=${gender}
-        AND convert(datetime, ${recruitDate}) < DATEADD(day, -${recruitDateTresholdInDays}, getdate()))
+      .query(`
+        SELECT TOP(5) * FROM CUSTOMERS
+          WHERE city=${city}
+          AND GENDER=${gender}
+          AND convert(datetime, ${recruitDate}) < DATEADD(day, -${recruitDateTresholdInDays}, getdate()))
       `);
 
     return resultWithIncreasedThreshold.recordsets[0];
@@ -58,13 +68,44 @@ async function findSimilarConsultants(currentConsultant: Consultant) {
   }
 }
 
-async function differentProductsByConsultant(consultantId: string) {
-  const consultant = createConsultantFromServerModel(
-    getConsultantById(consultantId)
-  );
+// ===========================================================
+// ===========================================================
+// ===========================================================
 
-  const products = await getProducts();
-  return products as Product[];
+type DifferentProductsByConsultantArgs = {
+  consultantId: string
+  alreadySelectedItems: string[]
+}
+const differentProductsByConsultant = async (args: DifferentProductsByConsultantArgs): Promise<Product[]> => {
+  const consultant = await getConsultantById(args.consultantId)
+
+  const categories = [
+    'Accessories',
+    'Wellness',
+    'Skin Care',
+    'Personal Care',
+    'Other Category',
+    'Colour Cosmetics',
+    'Fragrances',
+    'Hair Care',
+  ]
+  const pool = await sql.connect(config.get("DATABASE"));
+  
+  const differentProducts = await pool.request().query(`
+    SELECT
+      TOP(5) *
+      FROM PRODUCTS
+      WHERE category_descr = '${categories[0]}'
+  `);
+  sql.close();
+
+
+  return differentProducts.recordset.map(product => ({
+    id: product.prod_cd,
+    name: product.prod_descr,
+    thumbnailUrl: product.thumbnail_url,
+    imageUrl: product.image_url,
+  }))
 }
 
 export default differentProductsByConsultant;

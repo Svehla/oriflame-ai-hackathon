@@ -1,3 +1,4 @@
+/*
 import config from "config";
 import { Request, ConnectionPool, default as sql } from "mssql";
 
@@ -29,3 +30,42 @@ const startDbService = () => {
 };
 
 startDbService();
+*/
+
+import {
+  verifyUser,
+  differentProductsByConsultant
+} from './index'
+const main = async () => {
+  try {
+
+    // const isUserVerified = await verifyUser('9D8671FCE')
+    // console.log(lol)
+
+    const similarProducts = await differentProductsByConsultant({
+      consultantId: '9D8671FCE',
+      alreadySelectedItems: [],
+    })
+    const similarProducts = await differentProductsByConsultant({
+      consultantId: '9D8671FCE',
+      alreadySelectedItems: [],
+    })
+    const similarProducts = await differentProductsByConsultant({
+      consultantId: '9D8671FCE',
+      alreadySelectedItems: [],
+    })
+    const similarProducts = await differentProductsByConsultant({
+      consultantId: '9D8671FCE',
+      alreadySelectedItems: [],
+    })
+    const similarProducts = await differentProductsByConsultant({
+      consultantId: '9D8671FCE',
+      alreadySelectedItems: [],
+    })
+    console.log('______')
+    console.log(similarProducts)
+  } catch(e) {
+    console.log(e)
+  }
+}
+main()

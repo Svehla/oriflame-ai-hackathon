@@ -5,6 +5,7 @@ type GetProductsByConfiguration = {
   name: string | null;
   // ... other configuration
 };
+
 const getProductsByConfiguration = async (args: GetProductsByConfiguration) => {
   return fakeProducts as Product[];
 };

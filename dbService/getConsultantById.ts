@@ -1,5 +1,5 @@
-import config from "config";
-const sql = require("mssql");
+import config from "config"
+import * as sql from "mssql"
 
 async function getConsultantById(consultantId: string) {
   try {
@@ -7,7 +7,7 @@ async function getConsultantById(consultantId: string) {
     const result = await pool
       .request()
       .query(
-        `SELECT * FROM [dbo].CUSTOMERS WHERE CONSULTANT_NUMBER_S = ${consultantId}`
+        `SELECT * FROM [dbo].CUSTOMERS WHERE CONSULTANT_NUMBER_S = '${consultantId}'`
       );
 
     sql.close();

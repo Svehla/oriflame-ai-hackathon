@@ -12,6 +12,7 @@ const verifyUser = async (consultantId: string): Promise<boolean> => {
 
     sql.close();
 
+    console.log(result)
     if (result.recordsets[0].length > 0) {
       return true;
     }
@@ -21,5 +22,6 @@ const verifyUser = async (consultantId: string): Promise<boolean> => {
     return false;
   }
 };
+
 
 export default verifyUser;

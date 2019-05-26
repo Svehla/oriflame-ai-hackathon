@@ -46,22 +46,6 @@ const main = async () => {
       consultantId: '9D8671FCE',
       alreadySelectedItems: [],
     })
-    const similarProducts = await differentProductsByConsultant({
-      consultantId: '9D8671FCE',
-      alreadySelectedItems: [],
-    })
-    const similarProducts = await differentProductsByConsultant({
-      consultantId: '9D8671FCE',
-      alreadySelectedItems: [],
-    })
-    const similarProducts = await differentProductsByConsultant({
-      consultantId: '9D8671FCE',
-      alreadySelectedItems: [],
-    })
-    const similarProducts = await differentProductsByConsultant({
-      consultantId: '9D8671FCE',
-      alreadySelectedItems: [],
-    })
     console.log('______')
     console.log(similarProducts)
   } catch(e) {

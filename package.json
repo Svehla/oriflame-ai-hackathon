@@ -4,7 +4,7 @@
   "description": "AI masterclass tensorflow HTML",
   "main": "index.js",
   "scripts": {
-    "start-db-service": "ts-node-dev --respawn --transpileOnly ./dbService/startDbService.ts",
+    "test-db-service": "ts-node-dev --respawn --transpileOnly ./dbService/testDbService.ts",
     "db-populate-json": "ts-node ./dbService/populateWithJsonData.ts",
     "messenger": "ts-node --transpileOnly messenger/index.ts",
     "messenger-dev": "ts-node-dev --inspect -- messenger/index.ts"

@@ -96,7 +96,10 @@ const differentProductsByConsultant = async (args: DifferentProductsByConsultant
       TOP(5) *
       FROM PRODUCTS
       WHERE category_descr = '${categories[0]}'
+      AND thumbnail_url IS NOT NULL
+      AND image_url IS NOT NULL
   `);
+
   sql.close();
 
 

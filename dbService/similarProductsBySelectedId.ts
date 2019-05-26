@@ -19,16 +19,20 @@ const similarProductsBySelectedId = async (args: SimilarProductsBySelectedId): P
 
   const productsByIds = productsByIdsResult.recordset
 
-  const similarProducts = await pool.request().query(`
-    SELECT
-      TOP(5) *
-      FROM PRODUCTS
-    WHERE category_descr IN (${productsByIds.map(({ category_descr }) => `'${ category_descr}'`).join(',')})
-      AND thumbnail_url <> ''
-      AND image_url <> ''
-    ORDER BY RAND()
-    `
-  );
+
+  const sqlQuery = `
+  SELECT
+    TOP(5) *
+    FROM PRODUCTS
+  WHERE category_descr IN (${
+    productsByIds.map(({ category_descr }) => `'${ category_descr}'`).join(',')
+  })
+    AND thumbnail_url <> ''
+    AND image_url <> ''
+  ORDER BY RAND()
+  `
+
+  const similarProducts = await pool.request().query(sqlQuery);
   
   sql.close();
 

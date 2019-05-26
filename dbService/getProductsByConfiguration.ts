@@ -23,7 +23,7 @@ const getProductsByConfiguration = async (args: GetProductsByConfiguration) => {
 
   const pool = await sql.connect(config.get("DATABASE"));
   
-  const differentProducts = await pool.request().query(`
+  const sqlQuery = `
     SELECT
       TOP(5) *
       FROM PRODUCTS
@@ -39,7 +39,8 @@ const getProductsByConfiguration = async (args: GetProductsByConfiguration) => {
       ${!R.isNil(args.type) ? `AND type_descr = '${args.type}'` : ''}
       ${!R.isNil(args.price_segment) ? `AND price_segment_desc = '${args.price_segment}'` : ''}
     ORDER BY RAND()
-  `);
+  `
+  const differentProducts = await pool.request().query(sqlQuery);
 
   sql.close();
 

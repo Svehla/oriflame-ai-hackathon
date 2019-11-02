@@ -22,7 +22,7 @@
   "dependencies": {
     "@types/mssql": "^4.0.14",
     "@types/ramda": "^0.26.8",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "config": "latest",
     "cors": "latest",
     "csv-parser": "^2.3.0",
